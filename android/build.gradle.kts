@@ -15,6 +15,8 @@ rootProject.buildDir = file("../build")
 
 subprojects {
     buildDir = file("${rootProject.buildDir}/${project.name}")
+
+    // 🔹 Force Java 17 for Android library modules
     plugins.withId("com.android.library") {
         extensions.configure<com.android.build.gradle.LibraryExtension>("android") {
             compileOptions {
@@ -24,6 +26,7 @@ subprojects {
         }
     }
 
+    // 🔹 Force Java 17 for Android app modules
     plugins.withId("com.android.application") {
         extensions.configure<com.android.build.gradle.AppExtension>("android") {
             compileOptions {
@@ -32,10 +35,10 @@ subprojects {
             }
         }
     }
+
+    // 🔹 Force Kotlin to 17 everywhere
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = "17"
-        }
+        kotlinOptions.jvmTarget = "17"
     }
 }
 
