@@ -16,27 +16,23 @@ rootProject.buildDir = file("../build")
 subprojects {
     buildDir = file("${rootProject.buildDir}/${project.name}")
 
-    // 🔹 Force Java 17 for Android library modules
-    plugins.withId("com.android.library") {
-        extensions.configure<com.android.build.gradle.LibraryExtension>("android") {
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_17
-                targetCompatibility = JavaVersion.VERSION_17
+    // 🔹 Force Java 17 for ALL Android modules (apps + libraries)
+    plugins.withType<com.android.build.gradle.BasePlugin> {
+        project.extensions.findByName("android")?.let { ext ->
+            when (ext) {
+                is com.android.build.gradle.LibraryExtension -> {
+                    ext.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
+                    ext.compileOptions.targetCompatibility = JavaVersion.VERSION_17
+                }
+                is com.android.build.gradle.AppExtension -> {
+                    ext.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
+                    ext.compileOptions.targetCompatibility = JavaVersion.VERSION_17
+                }
             }
         }
     }
 
-    // 🔹 Force Java 17 for Android app modules
-    plugins.withId("com.android.application") {
-        extensions.configure<com.android.build.gradle.AppExtension>("android") {
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_17
-                targetCompatibility = JavaVersion.VERSION_17
-            }
-        }
-    }
-
-    // 🔹 Force Kotlin to 17 everywhere
+    // 🔹 Force Kotlin JVM target
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
         kotlinOptions.jvmTarget = "17"
     }
