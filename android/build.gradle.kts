@@ -1,5 +1,4 @@
 plugins {
-    // we only declare plugins with versions here, they get applied in subprojects
     id("com.android.application") apply false
     id("org.jetbrains.kotlin.android") apply false
     id("dev.flutter.flutter-gradle-plugin") apply false
@@ -12,10 +11,10 @@ allprojects {
     }
 }
 
-rootProject.buildDir = "../build"
+rootProject.buildDir = file("../build")
 
 subprojects {
-    buildDir = "${rootProject.buildDir}/${project.name}"
+    buildDir = file("${rootProject.buildDir}/${project.name}")
 }
 
 subprojects {
